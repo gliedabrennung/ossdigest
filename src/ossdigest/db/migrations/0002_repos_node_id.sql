@@ -1,0 +1,1 @@
+ALTER TABLE repos ADD COLUMN node_id TEXT;

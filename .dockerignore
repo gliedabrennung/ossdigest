@@ -1,0 +1,13 @@
+.git
+.venv
+venv
+__pycache__
+*.pyc
+.pytest_cache
+.env
+.env.openbao
+secrets/
+data/
+tests/
+tz-opensource-digest-bot.md
+README.md

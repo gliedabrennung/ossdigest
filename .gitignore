@@ -1,0 +1,14 @@
+__pycache__/
+*.pyc
+.venv/
+venv/
+.env
+.env.openbao
+secrets/
+data/*.db
+data/*.db-wal
+data/*.db-shm
+data/backups/
+.pytest_cache/
+*.egg-info/
+.ruff_cache/

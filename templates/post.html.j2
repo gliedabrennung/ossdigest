@@ -1,0 +1,11 @@
+🔧 <b>{{ title }}</b>
+
+{{ body }}
+{% if bullets %}
+{% for bullet in bullets %}
+• {{ bullet }}
+{% endfor %}
+{% endif %}
+{{ language or "—" }} · {{ license or "—" }} · ⭐ {{ stars }}
+
+<a href="{{ url }}">{{ full_name }}</a>

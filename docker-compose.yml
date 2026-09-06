@@ -1,0 +1,42 @@
+services:
+  openbao:
+    image: openbao/openbao:2.1.0
+    restart: unless-stopped
+    cap_add: [IPC_LOCK]
+    command: ["server"]
+    volumes:
+      - openbao-data:/openbao/file
+      - ./ops/openbao/config.hcl:/openbao/config/config.hcl:ro
+    ports:
+      - "127.0.0.1:8200:8200"  # только loopback хоста, для scripts/openbao_bootstrap.sh
+
+  publisher:
+    build: .
+    image: ossdigest:latest
+    command: ["ossdigest-publisher"]
+    restart: unless-stopped
+    depends_on: [openbao]
+    env_file: [.env, .env.openbao]
+    volumes:
+      - ./data:/app/data
+      - ./config:/app/config
+    healthcheck:
+      test: ["CMD", "python", "-m", "scripts.healthcheck"]
+      interval: 60s
+      timeout: 10s
+      retries: 3
+      start_period: 30s
+
+  collector:
+    build: .
+    image: ossdigest:latest
+    command: ["ossdigest-collector"]
+    profiles: ["collector"]  # запускается только вручную/по cron: docker compose run --rm collector
+    depends_on: [openbao]
+    env_file: [.env, .env.openbao]
+    volumes:
+      - ./data:/app/data
+      - ./config:/app/config
+
+volumes:
+  openbao-data:

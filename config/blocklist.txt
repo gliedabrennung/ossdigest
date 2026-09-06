@@ -1,0 +1,9 @@
+^awesome[-_]
+(?i)\b(awesome[- ]list|curated list|collection of)\b
+(?i)\b(interview|leetcode|coding challenge|roadmap|cheat[- ]?sheet)\b
+(?i)\b(free[- ]resources|learning path|tutorial series|course|bootcamp)\b
+(?i)\b(dotfiles|my (blog|portfolio|website|config))\b
+(?i)\b(airdrop|token|web3 (bot|farm)|trading bot|pump)\b
+(?i)\b(telegram (member|view) (booster|bot)|follower)\b
+(?i)\b(nsfw|adult)\b
+(?i)\b(crack|keygen|nulled|activator|reset[- ]?trial)\b

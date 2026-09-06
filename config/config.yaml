@@ -1,0 +1,103 @@
+sources:
+  github_search:
+    enabled: true
+    weight: 1.0
+    queries:
+      - "stars:>150 pushed:>{d-14} created:>{d-180}"
+      - "stars:>500 pushed:>{d-7}"
+      - "topic:cli stars:>100 pushed:>{d-30}"
+      - "topic:developer-tools stars:>100 pushed:>{d-30}"
+      - "topic:self-hosted stars:>100 pushed:>{d-30}"
+    max_items: 120
+  github_trending_html:
+    enabled: false
+    weight: 0.8
+    max_items: 50
+  hacker_news:
+    enabled: true
+    weight: 1.4
+    min_points: 80
+    max_items: 60
+  lobsters:
+    enabled: true
+    weight: 1.1
+    boards: ["programming", "devops", "ai"]
+    max_items: 40
+  gitlab:
+    enabled: false
+    weight: 0.5
+    max_items: 30
+
+heuristics:
+  min_stars: 120
+  min_desc_len: 20
+  max_stale_days: 60
+  require_license: true
+  max_stars_per_day: 3000
+  readme_min_chars: 400
+  readme_max_chars: 200000
+  blocked_languages: ["Markdown", "TeX", "HTML", "Jupyter Notebook", "CSS"]
+  blocklist_patterns_file: "config/blocklist.txt"
+
+readme:
+  max_chars: 4000
+  min_chars: 400
+  strip_sections:
+    ["Installation", "Install", "Getting Started", "Contributing",
+     "License", "Changelog", "Sponsors", "Backers", "Stargazers",
+     "Contributors", "Acknowledgements", "Citation", "Star History",
+     "Table of Contents"]
+
+groq:
+  base_url: "https://api.groq.com/openai/v1"
+  daily_budget_usd: 1.50
+  timeout_seconds: 90
+  max_retries: 3
+
+judge:
+  model: "openai/gpt-oss-120b"
+  fallback_model: "openai/gpt-oss-20b"
+  prompt_version: "judge.v1"
+  prompt_file: "prompts/judge.v1.txt"
+  temperature: 0.1
+  max_tokens: 700
+  reasoning_effort: "low"
+  publish_threshold: 7.0
+  hold_threshold: 5.5
+  max_candidates_per_run: 60
+  growth_bonus_threshold: 300
+  hn_points_bonus_threshold: 150
+
+writer:
+  model: "openai/gpt-oss-120b"
+  prompt_version: "writer.v1"
+  prompt_file: "prompts/writer.v1.txt"
+  template_file: "templates/post.html.j2"
+  temperature: 0.5
+  max_tokens: 1536
+  reasoning_effort: "low"
+  language: "ru"
+  target_chars: [250, 450]
+  hard_max_chars: 600
+
+moderation:
+  enabled: true
+  timeout_hours: 72
+  timeout_action: "auto_reject"
+
+publisher:
+  timezone: "Asia/Almaty"
+  slots: ["07:00", "10:00", "13:00", "16:00", "19:00", "22:00"]
+  jitter_minutes: 12
+  max_per_day: 6
+  min_gap_minutes: 90
+  skip_if_queue_empty: true
+  disable_web_page_preview: false
+  diversity_check: true
+
+dedup:
+  repost_cooldown_days: 365
+
+alerts:
+  queue_low_threshold: 3
+  notify_admin_on_error: true

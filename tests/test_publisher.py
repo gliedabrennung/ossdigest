@@ -249,5 +249,5 @@ def test_count_published_today_and_last_published_at(tmp_path):
         "INSERT INTO posts (repo_id, body_html, status, created_at, published_at) VALUES (?, 'x', 'published', 'now', ?)",
         (repo_id, now),
     )
-    assert _count_published_today(conn) == 1
+    assert _count_published_today(conn, "UTC") == 1
     assert _last_published_at(conn) is not None

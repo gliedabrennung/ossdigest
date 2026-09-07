@@ -389,7 +389,7 @@ def _next_slot_delay_seconds(slots: list[str], timezone_name: str, jitter_minute
 async def publisher_scheduler_loop(services: PublisherServices) -> None:
     cfg = services.config.publisher
     while True:
-        published_today = _count_published_today(services.conn)
+        published_today = _count_published_today(services.conn, cfg.timezone)
         if published_today >= cfg.max_per_day:
             await asyncio.sleep(_seconds_until_midnight(cfg.timezone))
             continue
@@ -412,13 +412,22 @@ async def publisher_scheduler_loop(services: PublisherServices) -> None:
         await publish_next(services)
 
 
-def _count_published_today(conn: sqlite3.Connection) -> int:
-    today = datetime.now(timezone.utc).date().isoformat()
-    row = conn.execute(
-        "SELECT COUNT(*) AS n FROM posts WHERE status = 'published' AND substr(published_at, 1, 10) = ?",
-        (today,),
-    ).fetchone()
-    return row["n"]
+def _count_published_today(conn: sqlite3.Connection, timezone_name: str) -> int:
+    from zoneinfo import ZoneInfo
+
+    tz = ZoneInfo(timezone_name)
+    today = datetime.now(tz).date()
+    rows = conn.execute(
+        "SELECT published_at FROM posts WHERE status = 'published' AND published_at IS NOT NULL"
+    ).fetchall()
+    count = 0
+    for row in rows:
+        dt = datetime.fromisoformat(row["published_at"])
+        if dt.tzinfo is None:
+            dt = dt.replace(tzinfo=timezone.utc)
+        if dt.astimezone(tz).date() == today:
+            count += 1
+    return count
 
 
 def _last_published_at(conn: sqlite3.Connection) -> datetime | None:
